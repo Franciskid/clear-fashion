@@ -19,24 +19,31 @@ if (fav == null)
 }
 
 // inititiate selectors;
-const selectShow = document.querySelector('#show-select');
-const selectPage = document.querySelector('#page-select');
-const selectSort = document.querySelector('#sort-select');
-const selectBrand = document.querySelector('#brand-select');
+const selectShow = $('#show-select')[0];
+selectShow.selectedIndex = 0;
+const selectPage = $('#page-select')[0];
+selectPage.selectedIndex = 0;
+const selectSort = $('#sort-select')[0];
+selectSort.selectedIndex = 0;
+const selectBrand = $('#brand-select')[0];
+selectBrand.selectedIndex = 0;
 
-const selectRecently = document.querySelector('#recently-select');
-const selectReasonable = document.querySelector('#reasonable-select');
-const selectFavorite = document.querySelector('#favorite-select');
+const selectRecently = $('#recently-select')[0];
+selectRecently.checked = choices.recently_released;
+const selectReasonable = $('#reasonable-select')[0];
+selectReasonable.checked = choices.reasonable_price;
+const selectFavorite = $('#favorite-select')[0];
+selectFavorite.checked = choices.fav;
 
-const sectionProducts = document.querySelector('#products');
-const sectionOptions = document.querySelector('#options');
+const sectionProducts = $('#products')[0];
+const sectionOptions = $('#options')[0];
 
-const spanNbProducts = document.querySelector('#nbProducts');
-const spanNewProducts = document.querySelector('#newProducts');
-const spanP50 = document.querySelector('#p50');
-const spanP90 = document.querySelector('#p90');
-const spanP95 = document.querySelector('#p95');
-const spanLastDate = document.querySelector('#lastDate');
+const spanNbProducts = $('#nbProducts')[0];
+const spanNewProducts = $('#newProducts')[0];
+const spanP50 = $('#p50')[0];
+const spanP90 = $('#p90')[0];
+const spanP95 = $('#p95')[0];
+const spanLastDate = $('#lastDate')[0];
 
 /**
  * Set global value
@@ -123,7 +130,7 @@ const renderProducts = products => {
     let body = table.createTBody();
     products.forEach(function(obj, i) {
       let row = body.insertRow();
-      row.align = 'center';
+      row.style.align = 'center';
       let cell = row.insertCell();
       let link = document.createElement('a');
       link.href = obj.link;
@@ -155,10 +162,13 @@ const renderProducts = products => {
       
       cell = row.insertCell();
       cell.id = "price";
+      cell.style.fontSize = 'larger';
+      cell.style.textAlign = 'center';
       cell.appendChild(document.createTextNode(obj.price + "€"));
       
       cell = row.insertCell();
       cell.id = "date";
+      cell.style.textAlign = 'center';
       cell.appendChild(document.createTextNode(formatDate(new Date(obj.released))));
 
       cell = row.insertCell();
@@ -175,7 +185,8 @@ const renderProducts = products => {
           fav.splice(fav.findIndex(item => item.name == id), 1);
         }
         window.localStorage["favorites"] = JSON.stringify(fav);
-      })
+      });
+      cell.style.textAlign = 'center';
       cell.appendChild(checkbox);
     });
 
@@ -267,9 +278,20 @@ const renderPagination = pagination => {
  * @param  {Object} pagination
  */
 const renderIndicators = pagination => {
-  const pageSize = choices.fav ? fav.length : pagination.pageSize; //count
-
   let products = choices.fav ? [...fav] : [...currentProducts];
+
+  products = products.filter((o, index) => choices.brands == 0 || o.brand == uniqueBrands[choices.brands]);
+
+  if (choices.reasonable_price)
+  {
+    products = products.filter((o, index) => o.price < 50);
+  }
+  if (choices.recently_released)
+  { 
+    var d = new Date();
+    d.setDate(d.getDate() - 14);
+    products = products.filter((o, index) => new Date(o.released) > d);
+  }
 
   var d = new Date();
   d.setDate(d.getDate() - 14);
@@ -283,7 +305,7 @@ const renderIndicators = pagination => {
   products.sort((x, y) => new Date(x.released) < new Date(y.released)  ? 1 : -1);
   let lastReleased = products[0].released;
 
-  spanNbProducts.innerHTML = pageSize;
+  spanNbProducts.innerHTML = products.length;
   spanNewProducts.innerHTML = newProd;
   spanP50.innerHTML = p5OPrice + "€";
   spanP90.innerHTML = p90Price + "€";
@@ -355,14 +377,7 @@ selectPage.addEventListener('change', event => {
  */
 selectSort.addEventListener('change', event => {
   choices.sort = selectSort.selectedOptions[0].value;
-  if (choices.fav)
-  {
-    render(fav, currentPagination);
-  }
-  else
-  {
-    render(currentProducts, currentPagination);
-  }
+  render(choices.fav ? fav : currentProducts, currentPagination);
 });
 
 /**
@@ -371,14 +386,7 @@ selectSort.addEventListener('change', event => {
  */
 selectBrand.addEventListener('change', event => {
   choices.brands = selectBrand.selectedIndex;
-  if (choices.fav)
-  {
-    render(fav, currentPagination);
-  }
-  else
-  {
-    render(currentProducts, currentPagination);
-  }
+  render(choices.fav ? fav : currentProducts, currentPagination);
 });
 
 /**
@@ -387,14 +395,7 @@ selectBrand.addEventListener('change', event => {
  */
  selectRecently.addEventListener('change', event => {
   choices.recently_released = selectRecently.checked;
-  if (choices.fav)
-  {
-    render(fav, currentPagination);
-  }
-  else
-  {
-    render(currentProducts, currentPagination);
-  }
+  render(choices.fav ? fav : currentProducts, currentPagination);
 });
 
 /**
@@ -403,14 +404,7 @@ selectBrand.addEventListener('change', event => {
  */
 selectReasonable.addEventListener('change', event => {
   choices.reasonable_price = selectReasonable.checked;
-  if (choices.fav)
-  {
-    render(fav, currentPagination);
-  }
-  else
-  {
-    render(currentProducts, currentPagination);
-  }
+  render(choices.fav ? fav : currentProducts, currentPagination);
 });
 
 /**
@@ -419,14 +413,7 @@ selectReasonable.addEventListener('change', event => {
  */
 selectFavorite.addEventListener('change', event => {
   choices.fav = selectFavorite.checked;
-  if (choices.fav)
-  {
-    render(fav, currentPagination);
-  }
-  else
-  {
-    render(currentProducts, currentPagination);
-  }
+  render(choices.fav ? fav : currentProducts, currentPagination);
 });
 
 
@@ -436,8 +423,6 @@ document.addEventListener('DOMContentLoaded', () =>{
   fetchProducts(1, 12)
     .then(setCurrentProducts)
     .then(() => render(currentProducts, currentPagination));
-  
-  
   }
 );
 
