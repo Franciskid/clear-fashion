@@ -1,11 +1,20 @@
 /* eslint-disable no-console, no-process-exit */
 const dedicatedbrand = require('./sources/dedicatedbrand');
+const montlimartbrand = require('./sources/montlimartbrand');
+const adresseparisbrand = require('./sources/adresseparisbrand');
 
-async function sandbox (eshop = 'https://www.dedicatedbrand.com/en/men/news') {
+const brands = {
+  Dedicated: 'https://www.dedicatedbrand.com/en/men/all-men',
+  Montlimart: 'https://adresse.paris/630-toute-la-collection',
+  AdresseParis: 'https://www.montlimart.com/toute-la-collection.html'
+}
+
+
+async function sandbox(index) {
   try {
-    console.log(`🕵️‍♀️  browsing ${eshop} source`);
+    console.log(`🕵️‍♀️  browsing ${brands[index]} source`);
 
-    const products = await dedicatedbrand.scrape(eshop);
+    const products = await index == 0 ? dedicatedbrand.scrape(brands[index]) : index == 1 ? montlimartbrand.scrape(brands[index]) : adresseparisbrand.scrape(brands[index]);
 
     console.log(products);
     console.log('done');
@@ -16,6 +25,8 @@ async function sandbox (eshop = 'https://www.dedicatedbrand.com/en/men/news') {
   }
 }
 
-const [,, eshop] = process.argv;
+async function launchScrapp(){
+  brands.forEach((x, i) => await(sandbox(i)));
+}
 
-sandbox(eshop);
+launchScrapp(URLLIst);

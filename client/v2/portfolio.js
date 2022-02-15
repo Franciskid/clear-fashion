@@ -83,7 +83,7 @@ const fetchProducts = async (page, size) => {
     return {currentProducts, currentPagination};
   }
 };
-
+ 
 /**
  * Render list of products
  * @param  {Array} products
