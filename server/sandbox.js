@@ -25,8 +25,8 @@ async function sandbox(index) {
   }
 }
 
-async function launchScrapp(){
+async function launchScrape(){
   brands.forEach((x, i) => await(sandbox(i)));
 }
 
-launchScrapp(URLLIst);
+launchScrape(URLLIst);
