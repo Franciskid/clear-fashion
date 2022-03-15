@@ -22,7 +22,7 @@ async function sandbox(index) {
   
       let _products = await brands[index][1].scrape(brands[index][0])
       
-      console.log('done');
+      console.log(`Just read ${_products.length} products for ${index}`);
 
       return _products;
 

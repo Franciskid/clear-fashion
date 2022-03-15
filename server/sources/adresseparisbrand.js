@@ -23,7 +23,6 @@ const parse = data => {
           .text().trim().replace(/[\s\t€]/g, ' ').trim());
       
       const link = $(element).find('.product_img_link').attr('href');
-      console.log("link:", link)
 
       const photo = $(element).find('.img_0').attr('src');
       

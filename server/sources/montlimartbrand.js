@@ -9,28 +9,31 @@ const {'v5': uuidv5} = require('uuid');
 const parse = data => {
   const $ = cheerio.load(data);
 
-  return $('.product-container')
+  return $('.category-products .products-grid .item')
     .map((i, element) => {
       const name = $(element)
-        .find('.product-name-container.versionmob')
+        .find('.product-name')
         .text()
         .trim()
         .replace(/[\s\t]/g, ' ');
+        
       const price = parseInt(
         $(element)
-           .find('.price.product-price')
+           .find('.price')
           .text().trim().replace(/[\s\t€]/g, ' ').trim());
       
-      const link = 
-      $(element).find('.product_img_link').attr('href');
+      const link = $(element).find('.product-name a').attr('href');
 
-      let photo = []
-      photo.push($(element).find('.img_0').attr('data-original'));
-      photo.push($(element).find('.img_1').attr('data-rollover'));
-      let _id = uuidv5(link, uuidv5.URL);
-      let brand = 'Montlimart'
-      return {name, price,link,photo,_id,brand};
+      console.log(`Montlimart Name : ${name}  Price : ${price}   Link : ${link}`)
 
+      const photo = $(element).find('.product-image a img').attr('src');
+      
+      if (name && price && link)
+      {
+        const _id = uuidv5(link, uuidv5.URL);
+        const brand = 'Montlimart'
+        return {name, price,link,photo,_id,brand};
+      }
     })
     .get();
 };
