@@ -34,6 +34,7 @@ const parse = data => {
  */
 module.exports.scrape = async url => {
   try {
+    console.log("Fetching  montlimart ..., url : ", url)
     const response = await fetch(url);
 
     if (response.ok) {
