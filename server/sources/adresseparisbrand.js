@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
-
+const {'v5': uuidv5} = require('uuid');
 /**
  * Parse webpage e-shop
  * @param  {String} data - html response
@@ -9,20 +9,36 @@ const cheerio = require('cheerio');
 const parse = data => {
   const $ = cheerio.load(data);
 
-  return $('.productList-container .productList')
+  return $('.product-container')
     .map((i, element) => {
       const name = $(element)
-        .find('.productList-title')
+        .find('.product-name')
         .text()
         .trim()
-        .replace(/\s/g, ' ');
+        .replace(/[\s\t]/g, ' ');
+
       const price = parseInt(
         $(element)
-          .find('.productList-price')
-          .text()
-      );
+           .find('.prixright')
+          .text().trim().replace(/[\s\t€]/g, ' ').trim());
+      
+      const link = $(element).find('.product_img_link').attr('href');
+      console.log("link:", link)
 
-      return {name, price};
+      const photo = $(element).find('.img_0').attr('src');
+      
+      if (link)
+      {
+        let _id = uuidv5(link, uuidv5.URL);
+        let brand = 'AdresseParis'
+        return {name, price,link,photo,_id,brand};
+      }
+      else
+      {
+        let _id = uuidv5(name, uuidv5.URL);
+        let brand = 'AdresseParis'
+        return {name, price, link, photo, _id, brand}
+      }
     })
     .get();
 };
@@ -34,7 +50,6 @@ const parse = data => {
  */
 module.exports.scrape = async url => {
   try {
-    console.log("Fetching  adresse ..., url : ", url)
     const response = await fetch(url);
 
     if (response.ok) {
