@@ -1,9 +1,9 @@
-var products = require("./sources/items.json");
+var products = require("../server/products.json");
 var secret = require("dotenv").config({ path: "./.env" });
 const { MongoClient } = require("mongodb");
-const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME;
-const MONGO_COLLECTION = process.env.MONGO_COLLECTION;
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_DB_NAME = 'clearfashion';
+const MONGO_COLLECTION = 'products';
+const MONGODB_URI = 'mongodb+srv://anfroiyan:temalakichta69@clearfashioncluster.vqzn2.mongodb.net/clearfashion?retryWrites=true&w=majority';
 
 let database = null;
 let client = null;
@@ -25,6 +25,8 @@ const getDB = async () => {
     console.error(err);
   }
 };
+
+
 
 const removeProducts = async (query) => {
   try {
@@ -63,7 +65,7 @@ const insertProducts = async () => {
   }
 };
 
-const query = async (query, sort = {}) => {
+module.exports.query = async (query, sort = {}) => {
   try {
     const db = await getDB();
     const collection = db.collection(MONGO_COLLECTION);
@@ -90,20 +92,28 @@ const close = async () => {
 const main = async () => {
   await removeProducts({});
   await insertProducts();
-  //   const query1 = { brand: "dedicated" };
-  //   const result1 = await query(query1);
-  //   console.log(result1);
+    const query1 = { brand: "dedicated" };
+    const result1 = await query(query1);
+    console.log(result1);
 
-  //   const query2 = { price: { $lt: 40 } };
-  //   const result2 = await query(query2);
-  //   console.log(result2);
-
-  const query3 = {};
-  const sort_price = { price: 1 };
-  const result3 = await query(query3, sort_price);
-  console.log(result3);
+    const query2 = { price: { $lt: 40 } };
+    const result2 = await query(query2);
+    console.log(result2);
 
   await close();
 };
 
-main();
+//main();
+
+module.exports.findSortLimit = async (query, sort,limit) => {
+  try {
+    const db = await getDB();
+    const collection = db.collection(MONGO_COLLECTION);
+    const result = await collection.find(query).sort(sort).limit(limit).toArray();
+    console.log(result)
+    return result;
+  } catch (error) {
+    console.error(error);
+    
+  }
+};
