@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
-
+const {'v5': uuidv5} = require('uuid');
 /**
  * Parse webpage e-shop
  * @param  {String} data - html response
@@ -12,17 +12,28 @@ const parse = data => {
   return $('.category-products .products-grid .item')
     .map((i, element) => {
       const name = $(element)
-        .find('.product-info .product-name')
+        .find('.product-name')
         .text()
         .trim()
-        .replace(/\s/g, ' ');
+        .replace(/[\s\t]/g, ' ');
+        
       const price = parseInt(
         $(element)
-          .find('.price-box .regular-price .price')
-          .text()
-      );
+           .find('.price')
+          .text().trim().replace(/[\s\t€]/g, ' ').trim());
+      
+      const link = $(element).find('.product-name a').attr('href');
 
-      return {name, price};
+      console.log(`Montlimart Name : ${name}  Price : ${price}   Link : ${link}`)
+
+      const photo = $(element).find('.product-image a img').attr('src');
+      
+      if (name && price && link)
+      {
+        const _id = uuidv5(link, uuidv5.URL);
+        const brand = 'Montlimart'
+        return {name, price,link,photo,_id,brand};
+      }
     })
     .get();
 };
