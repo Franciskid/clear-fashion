@@ -16,6 +16,7 @@ const getDB = async () => {
       console.log("Connecting to db...");
       client = await MongoClient.connect(MONGODB_URI, {
         useNewUrlParser: true,
+        useUnifiedTopology: true,
       });
       database = client.db(MONGODB_DB_NAME);
       console.log("connected to database successfully!");
@@ -34,7 +35,6 @@ const removeProducts = async (query) => {
     const collection = db.collection(MONGO_COLLECTION);
     const num_doc = await collection.countDocuments();
     if (num_doc > 0) {
-      const db = await getDB();
       await collection.deleteMany(query);
       console.log("Removed products!");
     } else {
@@ -114,6 +114,8 @@ module.exports.findSortLimit = async (query, sort,limit) => {
     return result;
   } catch (error) {
     console.error(error);
+    console.log(client);
+    console.log(database);
     
   }
 };
