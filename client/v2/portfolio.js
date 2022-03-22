@@ -175,7 +175,7 @@ const renderProducts = products => {
       cell = row.insertCell();
       cell.id = "date";
       cell.style.textAlign = 'center';
-      cell.appendChild(document.createTextNode(obj.released ? formatDate(new Date(obj.released)) : "Unknown &#128533;"));
+      cell.appendChild(document.createTextNode(obj.released ? formatDate(new Date(obj.released)) : "Unknown " + String.fromCodePoint(0x1F613)));
 
       cell = row.insertCell();
       var checkbox = document.createElement("input");
