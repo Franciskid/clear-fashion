@@ -24,19 +24,19 @@ const parse = data => {
       
       const link = $(element).find('.product_img_link').attr('href');
 
-      const photo = $(element).find('.img_0').attr('src');
+      const photo = $(element).find('.product_img_link').find('img').attr('data-original');
       
       if (link)
       {
-        let _id = uuidv5(link, uuidv5.URL);
+        let uuid = uuidv5(link, uuidv5.URL);
         let brand = 'AdresseParis'
-        return {name, price,link,photo,_id,brand};
+        return {name, price,link,photo,uuid,brand};
       }
       else
       {
-        let _id = uuidv5(name, uuidv5.URL);
+        let uuid = uuidv5(name, uuidv5.URL);
         let brand = 'AdresseParis'
-        return {name, price, link, photo, _id, brand}
+        return {name, price, link, photo, uuid, brand}
       }
     })
     .get();

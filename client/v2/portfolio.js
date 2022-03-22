@@ -6,7 +6,6 @@ let currentProducts = [];
 let currentPagination = {};
 let choices = {reasonable_price : false, recently_released : false, brands : 0, sort : "Name", fav: false};
 
-
 //Unique brands
 let uniqueBrands = ["All"]; 
 Array.prototype.push.apply(uniqueBrands, [...new Set(currentProducts.map(item => item.brand))]);
@@ -67,15 +66,10 @@ const fetchProducts = async (page, size) => {
     console.log(`https://clear-fashion-api.vercel.app?page=${page}&size=${size}`)
 
     const response = await fetch(
-      "https://server-mauve-nine.vercel.app/search"//`http://localhost:8092/search`//`https://clear-fashion-api.vercel.app?page=${page}&size=${size}`//`http://localhost:8092/search`
-    );
-    const response2 = await fetch(
-      `https://clear-fashion-api.vercel.app?page=${page}&size=${size}`//`http://localhost:8092/search`
+      "https://clear-fashion-server-api.vercel.app//search"//`http://localhost:8092/search`//`https://clear-fashion-api.vercel.app?page=${page}&size=${size}`//`http://localhost:8092/search`
     );
     const body = await response.json();
-    const body2 = await response2.json();
     console.log(body);
-    console.log(body2.data.result);
 
 
     if (body.length == 0) {
@@ -83,7 +77,7 @@ const fetchProducts = async (page, size) => {
       return {currentProducts, currentPagination};
     }
 
-    let meta = {"currentPage":page,"pageCount":size*page,"pageSize":size,"count":body.length};
+    let meta = {"currentPage":page,"pageCount": Math.floor(body.length/size),"pageSize":size,"count":body.length};
     let result = body.slice(size*(page - 1), size*page);
     let res = { result, 'meta': meta};
     console.log(res);
@@ -263,11 +257,11 @@ function padTo2Digits(num) {
 };
 
 function formatDate(date) {
-  return [
+  return date ? [
     padTo2Digits(date.getDate()),
     padTo2Digits(date.getMonth() + 1),
     date.getFullYear(),
-  ].join('/');
+  ].join('/') : "Unknown &#128533;";
 };
 
 /**

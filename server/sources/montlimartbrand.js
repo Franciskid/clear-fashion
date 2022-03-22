@@ -30,9 +30,9 @@ const parse = data => {
       
       if (name && price && link)
       {
-        const _id = uuidv5(link, uuidv5.URL);
+        const uuid = uuidv5(link, uuidv5.URL);
         const brand = 'Montlimart'
-        return {name, price,link,photo,_id,brand};
+        return {name, price,link,photo,uuid,brand};
       }
     })
     .get();

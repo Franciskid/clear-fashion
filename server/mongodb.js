@@ -1,4 +1,4 @@
-var products = [];// = require("../server/products.json");
+var products = require("../server/products.json");
 var secret = require("dotenv").config({ path: "./.env" });
 const { MongoClient } = require("mongodb");
 const MONGODB_DB_NAME = 'clearfashion';
@@ -65,7 +65,7 @@ const insertProducts = async () => {
   }
 };
 
-module.exports.query = async (query, sort = {}) => {
+const query = module.exports.query = async (query, sort = {}) => {
   try {
     const db = await getDB();
     const collection = db.collection(MONGO_COLLECTION);
@@ -103,7 +103,7 @@ const main = async () => {
   await close();
 };
 
-//main();
+main();
 
 module.exports.findSortLimit = async (query, sort,limit) => {
   try {
