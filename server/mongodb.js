@@ -26,6 +26,8 @@ const getDB = async () => {
   }
 };
 
+
+
 const removeProducts = async (query) => {
   try {
     const db = await getDB();
@@ -63,7 +65,7 @@ const insertProducts = async () => {
   }
 };
 
-const query = async (query, sort = {}) => {
+module.exports.query = async (query, sort = {}) => {
   try {
     const db = await getDB();
     const collection = db.collection(MONGO_COLLECTION);
@@ -101,4 +103,17 @@ const main = async () => {
   await close();
 };
 
-main();
+//main();
+
+module.exports.findSortLimit = async (query, sort,limit) => {
+  try {
+    const db = await getDB();
+    const collection = db.collection(MONGO_COLLECTION);
+    const result = await collection.find(query).sort(sort).limit(limit).toArray();
+    console.log(result)
+    return result;
+  } catch (error) {
+    console.error(error);
+    
+  }
+};
