@@ -22,27 +22,26 @@ app.get('/', (request, response) => {
   response.send({'ack': true});
 });
 
-app.get("/search/:limit?/:brand?/:price?", (request, response) => {
-  let limit = request.query.limit
-  let brand = request.query.brand
-  console.log("brand", brand);
-  let price = request.query.price
-  if (!limit){limit = 12}else{limit = parseInt(limit)}
-  if (!brand){brand = "all"}
-  if (!price){price = 99999999}else{price = parseInt(price)}
-  if(brand !=="all"){
-    db.findSortLimit({ "price": {$lt:price}, "brand":brand},{"price":1},limit).then(res=>response.send(res));
-  }else{
-    db.findSortLimit({ "price": {$lt:price}},{"price":1},limit).then(res=>response.send(res));
-  }
+app.get("/search/:size?/:page?", (request, response) => {
+  let size = request.query.size
+  let page = request.query.page
+
+  if (!size){size = 1000}else{size = parseInt(size)}
+
+  db.query({ }, size).then(res=>response.send(res));
+  //db.findSortLimit({ "price": {$lt:price}},{"price":1},limit).then(res=>response.send(res));
   
 });
 
-  
 
 
 app.get("/products/:id", (request, response) => {
+  try {
   db.query({ "_id": (request.params.id) }).then(res=>response.send(res))
+}
+catch(error) {
+  response.status(500).send(error);
+}
 });
 
 app.listen(PORT);

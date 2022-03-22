@@ -67,7 +67,7 @@ const fetchProducts = async (page, size) => {
     console.log(`https://clear-fashion-api.vercel.app?page=${page}&size=${size}`)
 
     const response = await fetch(
-      `https://server-fawn-xi.vercel.app/?page=${page}&size=${size}`
+      `https://server-fawn-xi.vercel.app/?size=1000`
     );
     const body = await response.json();
     console.log(body);
@@ -77,8 +77,14 @@ const fetchProducts = async (page, size) => {
       return {currentProducts, currentPagination};
     }
 
+    let meta = {"currentPage":page, "count":body.length, "pageCount":size*page, "pageSize":size};
+    var shuffle_body = shuffle(body);
+    let result = await reduceProducts(shuffle_body, size, page);
+    let res = {result, meta};
 
-    return body.data;
+    return res;
+
+    //return body.data;
   } catch (error) {
     console.error(error);
     return {currentProducts, currentPagination};
