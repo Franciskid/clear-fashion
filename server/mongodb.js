@@ -1,4 +1,4 @@
-var products = require("../server/products.json");
+var products = require("./products.json");
 var secret = require("dotenv").config({ path: "./.env" });
 const { MongoClient } = require("mongodb");
 const MONGODB_DB_NAME = 'clearfashion';
