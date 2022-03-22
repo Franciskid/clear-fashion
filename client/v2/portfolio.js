@@ -67,21 +67,26 @@ const fetchProducts = async (page, size) => {
     console.log(`https://clear-fashion-api.vercel.app?page=${page}&size=${size}`)
 
     const response = await fetch(
-      `https://server-fawn-xi.vercel.app/?size=1000`
+      "https://server-mauve-nine.vercel.app/search"//`http://localhost:8092/search`//`https://clear-fashion-api.vercel.app?page=${page}&size=${size}`//`http://localhost:8092/search`
+    );
+    const response2 = await fetch(
+      `https://clear-fashion-api.vercel.app?page=${page}&size=${size}`//`http://localhost:8092/search`
     );
     const body = await response.json();
+    const body2 = await response2.json();
     console.log(body);
+    console.log(body2.data.result);
 
-    if (body.success !== true) {
-      console.error(body);
+
+    if (body.length == 0) {
+      console.error(bodyy);
       return {currentProducts, currentPagination};
     }
 
-    let meta = {"currentPage":page, "count":body.length, "pageCount":size*page, "pageSize":size};
-    var shuffle_body = shuffle(body);
-    let result = await reduceProducts(shuffle_body, size, page);
-    let res = {result, meta};
-
+    let meta = {"currentPage":page,"pageCount":size*page,"pageSize":size,"count":body.length};
+    let result = body.slice(size*(page - 1), size*page);
+    let res = { result, 'meta': meta};
+    console.log(res);
     return res;
 
     //return body.data;

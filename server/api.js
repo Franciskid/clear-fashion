@@ -28,8 +28,8 @@ app.get("/search/:size?/:page?", (request, response) => {
 
   if (!size){size = 1000}else{size = parseInt(size)}
 
-  db.query({ }, size).then(res=>response.send(res));
-  //db.findSortLimit({ "price": {$lt:price}},{"price":1},limit).then(res=>response.send(res));
+  //db.query({ }, 1000).then(res=>response.send(res));
+  db.findSortLimit({ },{ },size).then(res=>response.send(res));
   
 });
 
