@@ -80,6 +80,7 @@ const close = async () => {
   try {
     if (client) {
       await client.close();
+      database = null;
       console.log("Successfully closed the connection!");
     } else {
       console.log("Client doesnt exist...");
@@ -105,7 +106,7 @@ const main = async () => {
 
 main();
 
-module.exports.findSortLimit = async (query, sort,limit) => {
+const findsort = module.exports.findSortLimit = async (query, sort,limit) => {
   try {
     const db = await getDB();
     const collection = db.collection(MONGO_COLLECTION);
@@ -114,8 +115,7 @@ module.exports.findSortLimit = async (query, sort,limit) => {
     return result;
   } catch (error) {
     console.error(error);
-    console.log(client);
-    console.log(database);
-    
+    close();
+    return findsort(query, sort, limit);
   }
 };
